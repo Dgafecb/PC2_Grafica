@@ -179,10 +179,12 @@ def prepare_dataset():
 
 @app.route('/X.npy', methods=['GET'])
 def download_X():
-    return send_file('./X.npy')
+    file_path = os.path.join('/app/uploads', 'X.npy') # Agregamos la ruta completa uploads/X.npy
+    return send_file(file_path)
 @app.route('/y.npy', methods=['GET'])
 def download_y():
-    return send_file('./y.npy')
+    file_path = os.path.join('/app/uploads', 'y.npy')
+    return send_file(file_path)
 
 if __name__ == "__main__":
     simbolos_romanos = ["I", "V", "X", "L", "C", "D", "M"]
