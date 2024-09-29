@@ -129,8 +129,13 @@ def prepare_dataset():
     images = []
     simbolos_romanos = ["I", "V", "X", "L", "C", "D", "M"]
     digits = []
+
+    
     for simbolo in simbolos_romanos:
         filelist = glob.glob('{}/*.png'.format(simbolo))
+        # Ignorar por si preparo sin imagenes
+        if not filelist:
+            continue
         images_read = io.concatenate_images(io.imread_collection(filelist))
         images_read = images_read[:, :, :, 3]  # Convertir la imagen a canal alfa si es necesario
         digits_read = np.array([simbolo] * images_read.shape[0])
