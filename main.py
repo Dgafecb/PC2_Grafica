@@ -105,18 +105,27 @@ main_html = """
 def main():
     return(main_html)
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
         # Obtener la imagen y el símbolo romano
-        img_data = request.form.get('myImage').replace("data:image/png;base64,","")
+        img_data = request.form.get('myImage').replace("data:image/png;base64,", "")
         aleatorio = request.form.get('numero')
         print(aleatorio)
         
-        # Guardar la imagen en la carpeta correspondiente
-        with tempfile.NamedTemporaryFile(delete = False, mode = "w+b", suffix='.png', dir=str(aleatorio)) as fh:
+        # Define the base directory inside the container (adjust this path as necessary)
+        base_dir = '/app/uploads/'  # Ensure this folder exists in your Docker container
+        
+        # Create the directory if it doesn't exist
+        target_dir = os.path.join(base_dir, aleatorio)
+        os.makedirs(target_dir, exist_ok=True)
+        
+        # Save the image in the appropriate folder
+        with tempfile.NamedTemporaryFile(delete=False, mode="w+b", suffix='.png', dir=target_dir) as fh:
             fh.write(base64.b64decode(img_data))
-        print("Image uploaded")
+        
+        print("Image uploaded successfully")
     except Exception as err:
         print("Error occurred")
         print(err)
@@ -124,28 +133,49 @@ def upload():
     return redirect("/", code=302)
 
 
+
+import os
+import glob
+import numpy as np
+from skimage import io
+
 @app.route('/prepare', methods=['GET'])
 def prepare_dataset():
     images = []
     simbolos_romanos = ["I", "V", "X", "L", "C", "D", "M"]
     digits = []
 
+    # Cuando utilizemos docker lo guardaremos en el siguiente directorio
+    base_dir = '/app/uploads/'
     
     for simbolo in simbolos_romanos:
-        filelist = glob.glob('{}/*.png'.format(simbolo))
-        # Ignorar por si preparo sin imagenes
+        # Buscaremos las imagenes dentro de uploads
+        filelist = glob.glob(os.path.join(base_dir, simbolo, '*.png'))
+        
+        # Para que ignore las imagenes si el folder esta vacio
         if not filelist:
             continue
+        
+        # Leer las imágenes y obtener el canal alfa (si es necesario)
         images_read = io.concatenate_images(io.imread_collection(filelist))
-        images_read = images_read[:, :, :, 3]  # Convertir la imagen a canal alfa si es necesario
+        images_read = images_read[:, :, :, 3]  # Si las imágenes tienen canal alfa, obtenerlo
+        
+        # Crear un array con el símbolo romano correspondiente para cada imagen
         digits_read = np.array([simbolo] * images_read.shape[0])
+        
         images.append(images_read)
         digits.append(digits_read)
+    
+    # Concatenar todas las imágenes y los dígitos correspondientes
     images = np.vstack(images)
     digits = np.concatenate(digits)
-    np.save('X.npy', images)
-    np.save('y.npy', digits)
-    return "OK!"
+    
+    # Guardar los datos en archivos .npy
+    np.save(os.path.join(base_dir, 'X.npy'), images)
+    np.save(os.path.join(base_dir, 'y.npy'), digits)
+    
+    return "Dataset preparado correctamente!"
+
 
 @app.route('/X.npy', methods=['GET'])
 def download_X():
