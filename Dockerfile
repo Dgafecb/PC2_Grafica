@@ -29,5 +29,8 @@ COPY . .
 # Expone el puerto de la aplicación
 EXPOSE 8000
 
+# Creamos un directorio para las imagenes subidas a la app
+RUN mkdir -p /app/uploads
+
 # Comando para ejecutar la aplicación
 CMD ["gunicorn", "-b", "0.0.0.0:8000", "main:app"]
