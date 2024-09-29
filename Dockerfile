@@ -27,8 +27,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 # Expone el puerto de la aplicación
-EXPOSE $PORT
+EXPOSE 8000
 
 # Comando para ejecutar la aplicación
-CMD ["gunicorn", "-b", "0.0.0.0:${PORT}", "main:app"]
-
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "main:app"]
