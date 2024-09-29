@@ -1,6 +1,11 @@
-# PC2_Grafica
-=======
-# Practica calificada 2
+# Practica calificada 2 - Grafica
+https://pc2grafica-production.up.railway.app/
+
+Para preparar los datos utilize
+https://pc2grafica-production.up.railway.app/prepare
+Para descargar los datos utilize
+https://pc2grafica-production.up.railway.app/X.npy
+https://pc2grafica-production.up.railway.app/y.npy
 
 ## Integrantes
 
