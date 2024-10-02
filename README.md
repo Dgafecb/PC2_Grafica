@@ -1,10 +1,10 @@
 # Practica calificada 2 - Grafica
 ## Web para obtener los datos
-https://pc2grafica-production.up.railway.app/
-
-### Para preparar los datos utilize
+https://pc2grafica-production.up.railway.app/joshua
+https://pc2grafica-production.up.railway.app/gabriel
+### Para preparar los datos:
 https://pc2grafica-production.up.railway.app/prepare
-### Para descargar los datos utilize
+### Para descargar los datos:
 https://pc2grafica-production.up.railway.app/X.npy y
 https://pc2grafica-production.up.railway.app/y.npy
 
